@@ -89,6 +89,7 @@ def get_base_url(url):
 
 # Turn relative url to absolute url in html
 
+"""
 def convert_to_absolute_url(html, base_url):
     soup = BeautifulSoup(html, 'html.parser')
 
@@ -116,11 +117,37 @@ def convert_to_absolute_url(html, base_url):
     updated_html = str(soup)
 
     return updated_html
+"""
+def convert_to_absolute_url(html, base_url):
+    # Ensure base_url is a valid URL
+    if not base_url.startswith(('http://', 'https://')):
+        raise ValueError("Invalid base_url provided.")
+    
+    soup = BeautifulSoup(html, 'html.parser')
+    
+    # Process <img> tags
+    for img_tag in soup.find_all('img'):
+        for attr in ['src', 'data-src']:
+            src = img_tag.get(attr)
+            if src and not src.startswith(('http://', 'https://')):
+                absolute_url = urljoin(base_url, src)
+                img_tag[attr] = absolute_url
+
+    # Process <a> tags
+    for link_tag in soup.find_all('a'):
+        href = link_tag.get('href')
+        if href and not href.startswith(('http://', 'https://')):
+            absolute_url = urljoin(base_url, href)
+            link_tag['href'] = absolute_url
+
+    return str(soup)
 
 
 def get_markdown_from_url(url):
     base_url = get_base_url(url)
+    #print(base_url)
     html = scrape_website(url)
+    #print(html)
     updated_html = convert_to_absolute_url(html, base_url)
     markdown = convert_html_to_markdown(updated_html)
 
@@ -181,9 +208,15 @@ def generate_answer(query, index):
 
     return response.content
 
+#url = "https://developers.webflow.com/docs/getting-started-with-apps"
+#query = "How to create a Webflow app?"
 
-url = "https://developers.webflow.com/docs/getting-started-with-apps"
-query = "How to create a Webflow app?"
+#url = "https://www.sec.gov/ix?doc=/Archives/edgar/data/320193/000032019323000077/aapl-20230701.htm"
+#query = "What was AAPL's gross margin? Were there any notable changes in gross margin percentage?"
+
+#url = "https://documentation.primetrust.com/"
+#query = "Provide a summary of the endpoints of the API documentation"
+
 markdown = get_markdown_from_url(url)
 index = create_index_from_text(markdown)
 answer = generate_answer(query, index)
