@@ -27,6 +27,8 @@ def scrape_website(url: str):
     headers = {
         'Cache-Control': 'no-cache',
         'Content-Type': 'application/json',
+        'User-Agent': 'Debbie Test cryptodomain0@gmail.com',
+        'Accept-Encoding': 'gzip, deflate',
     }
 
     # Define the data to be sent in the request
@@ -214,8 +216,8 @@ def generate_answer(query, index):
 #url = "https://www.sec.gov/ix?doc=/Archives/edgar/data/320193/000032019323000077/aapl-20230701.htm"
 #query = "What was AAPL's gross margin? Were there any notable changes in gross margin percentage?"
 
-#url = "https://documentation.primetrust.com/"
-#query = "Provide a summary of the endpoints of the API documentation"
+url = "https://documentation.primetrust.com/"
+query = "Provide a summary of the endpoints of the API documentation"
 
 markdown = get_markdown_from_url(url)
 index = create_index_from_text(markdown)
