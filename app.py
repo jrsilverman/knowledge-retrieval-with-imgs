@@ -36,7 +36,8 @@ def scrape_website(url: str):
         "url": url,
         "elements": [{
             "selector": "body"
-        }]
+        }],
+        "waitFor": 10000
     }
 
     # Convert Python object to JSON string
@@ -217,7 +218,7 @@ def generate_answer(query, index):
 #query = "What was AAPL's gross margin? Were there any notable changes in gross margin percentage?"
 
 url = "https://documentation.primetrust.com/"
-query = "Provide a summary of the endpoints of the API documentation"
+query = "Provide a detailed summary of the endpoints of the API documentation with links"
 
 markdown = get_markdown_from_url(url)
 index = create_index_from_text(markdown)
